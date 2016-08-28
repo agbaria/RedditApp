@@ -29,8 +29,8 @@ public class Utils {
         holder.tvCreated.setText(created(reddit.getCreated()));
         holder.tvTitle.setText(reddit.getTitle());
         holder.ivIcon.setImageBitmap(getIcon(reddit.getThumbnail(), context));
-        holder.tvScore.setText(reddit.getScore());
-        holder.tvComments.setText(reddit.getNumComments());
+        holder.tvScore.setText(new Integer(reddit.getScore()).toString());
+        holder.tvComments.setText(new Integer(reddit.getNumComments()).toString());
     }
 
     private static Bitmap getIcon(String _url, Context context) {

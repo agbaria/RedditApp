@@ -23,8 +23,8 @@
         android:layout_alignTop="@+id/ivIcon"
         android:layout_toRightOf="@+id/ivIcon"
         android:layout_toEndOf="@+id/ivIcon"
-        android:layout_toStartOf="@id/tvScore"
-        android:layout_toLeftOf="@id/tvScore" />
+        android:layout_toStartOf="@+id/tvRscore"
+        android:layout_toLeftOf="@+id/tvRscore" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -94,7 +94,7 @@
         android:text="310"
         android:layout_margin="5dp"
         android:gravity="center"
-        android:id="@+id/tvScore"
+        android:id="@+id/tvRscore"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />

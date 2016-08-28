@@ -2,11 +2,14 @@ package tm.agbaria.reddit.reddit;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import org.json.*;
 
 import java.util.ArrayList;
+
+import tm.agbaria.reddit.RedditAdapter;
 
 /**
  * Created by 3la2 on 24/08/2016.
@@ -62,6 +65,8 @@ public class RedditService extends AsyncTask {
     protected void onPostExecute(Object o) {
         super.onPostExecute(o);
         ArrayList<Reddit> reddits = (ArrayList<Reddit>) o;
-        //TODO: RedditAdapter...
+        RedditAdapter adapter = new RedditAdapter(reddits, context);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
     }
 }

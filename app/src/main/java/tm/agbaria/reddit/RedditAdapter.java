@@ -40,7 +40,7 @@ public class RedditAdapter extends RecyclerView.Adapter<RedditAdapter.RedditView
 
     @Override
     public int getItemCount() {
-        return 0;
+        return reddits.size();
     }
 
     class RedditViewAdapter extends RecyclerView.ViewHolder {
@@ -58,7 +58,7 @@ public class RedditAdapter extends RecyclerView.Adapter<RedditAdapter.RedditView
             tvCreated = (TextView) v.findViewById(R.id.tvCreated);
             tvAuthor = (TextView) v.findViewById(R.id.tvAuthor);
             tvComments = (TextView) v.findViewById(R.id.tvComments);
-            tvScore = (TextView) v.findViewById(R.id.tvScore);
+            tvScore = (TextView) v.findViewById(R.id.tvRscore);
         }
     }
 }
