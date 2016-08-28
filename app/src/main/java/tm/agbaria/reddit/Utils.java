@@ -45,7 +45,9 @@ public class Utils {
     }
 
     private static String created(long created) {
-        return new Long(created).toString();
+        Long c = new Long(created);
+        return c.toString();
         //TODO: convert the unix time to a readable time
+
     }
 }
