@@ -1,11 +1,18 @@
 package tm.agbaria.reddit;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.widget.ImageView;
 
-import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import tm.agbaria.reddit.reddit.Reddit;
 
@@ -24,30 +31,66 @@ public class Utils {
     int numComments;
      */
 
-    public static void attachReddit(RedditAdapter.RedditViewAdapter holder, Reddit reddit, Context context) {
+    public static void attachReddit(RedditAdapter.RedditViewAdapter holder, Reddit reddit) {
         holder.tvAuthor.setText(reddit.getAuthor());
         holder.tvCreated.setText(created(reddit.getCreated()));
         holder.tvTitle.setText(reddit.getTitle());
-        holder.ivIcon.setImageBitmap(getIcon(reddit.getThumbnail(), context));
-        holder.tvScore.setText(new Integer(reddit.getScore()).toString());
-        holder.tvComments.setText(new Integer(reddit.getNumComments()).toString());
+        setIcon(holder.ivIcon, reddit.getThumbnail());
+        holder.tvScore.setText(Integer.toString(reddit.getScore()));
+        holder.tvComments.setText(Integer.toString(reddit.getNumComments()));
     }
 
-    private static Bitmap getIcon(String _url, Context context) {
-        Bitmap bitmap;
+    private static void setIcon(ImageView view, final String _url) {
+        ExecutorService es = Executors.newSingleThreadExecutor();
+        Future<Bitmap> result = es.submit(new Callable<Bitmap>() {
+            public Bitmap call() throws Exception {
+                try {
+                    URL url = new URL(_url);
+                    return BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        });
+
         try {
-            URL url = new URL(_url);
-            bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+            Bitmap bmp = result.get();
+            if(bmp != null)
+                view.setImageBitmap(bmp);
         } catch (Exception e) {
-            bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.reddit);
+            e.printStackTrace();
         }
-        return bitmap;
     }
 
     private static String created(long created) {
-        Long c = new Long(created);
-        return c.toString();
-        //TODO: convert the unix time to a readable time
+        Date date = new Date(created * 1000L); // Why (* 1000L) ?? :/
+        Calendar topicDate = Calendar.getInstance();
+        topicDate.setTime(date); // Topic's date
+        Calendar today = Calendar.getInstance(); // Today's Date
 
+        long topicMonths = 12 * topicDate.get(Calendar.YEAR) + topicDate.get(Calendar.MONTH) + 1; //months passed till the topic posted
+        long todayMonths = 12 * today.get(Calendar.YEAR) + today.get(Calendar.MONTH) + 1; //months passed till today
+        long monthsDiff = todayMonths - topicMonths;
+        if(monthsDiff > 0) {
+            if(monthsDiff / 12 > 0)
+                return (monthsDiff / 12) + " years";
+            else
+                return monthsDiff + " months";
+        }
+        // less than a month
+        int topicHours = 24 * (topicDate.get(Calendar.DAY_OF_MONTH) - 1) + topicDate.get(Calendar.HOUR_OF_DAY);
+        int todayHours = 24 * (today.get(Calendar.DAY_OF_MONTH) - 1) + today.get(Calendar.HOUR_OF_DAY);
+        int hoursDiff = todayHours - topicHours;
+        if(hoursDiff > 0) {
+            if(hoursDiff / 24 > 0)
+                return (hoursDiff / 24) + " days";
+            else
+                return hoursDiff + " hours";
+        }
+        // less than an hour (no need to be so accurate)
+        if(today.get(Calendar.MINUTE) > topicDate.get(Calendar.MINUTE))
+            return (today.get(Calendar.MINUTE) - topicDate.get(Calendar.MINUTE)) + " minutes";
+        else return (today.get(Calendar.SECOND) - topicDate.get(Calendar.SECOND)) + " seconds";
     }
 }

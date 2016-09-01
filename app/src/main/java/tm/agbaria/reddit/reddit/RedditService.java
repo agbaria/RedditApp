@@ -14,7 +14,7 @@ import tm.agbaria.reddit.RedditAdapter;
 /**
  * Created by 3la2 on 24/08/2016.
  */
-public class RedditService extends AsyncTask {
+public class RedditService extends AsyncTask<Void, Void, ArrayList<Reddit>> {
     private String category;
     private RecyclerView recyclerView;
     private Context context;
@@ -30,7 +30,7 @@ public class RedditService extends AsyncTask {
     }
 
     @Override
-    protected Object doInBackground(Object[] objects) {
+    protected ArrayList<Reddit> doInBackground(Void... voids) {
         ArrayList<Reddit> reddits = new ArrayList<>();
         try {
             String _json = HttpManager.downloadData("https://www.reddit.com/r/" + category + "/.json");
@@ -50,7 +50,7 @@ public class RedditService extends AsyncTask {
 
     private Reddit jsonToReddit(JSONObject data) throws JSONException {
         String author = data.getString("author");
-        long created = data.getLong("created");
+        long created = data.getLong("created_utc");
         String url = data.getString("url");
         String title = data.getString("title");
         String thumbnail = data.getString("thumbnail");
@@ -62,9 +62,8 @@ public class RedditService extends AsyncTask {
     }
 
     @Override
-    protected void onPostExecute(Object o) {
-        super.onPostExecute(o);
-        ArrayList<Reddit> reddits = (ArrayList<Reddit>) o;
+    protected void onPostExecute(ArrayList<Reddit> reddits) {
+        super.onPostExecute(reddits);
         RedditAdapter adapter = new RedditAdapter(reddits, context);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));

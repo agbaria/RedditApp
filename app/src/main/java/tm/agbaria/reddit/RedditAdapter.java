@@ -35,7 +35,7 @@ public class RedditAdapter extends RecyclerView.Adapter<RedditAdapter.RedditView
     @Override
     public void onBindViewHolder(RedditViewAdapter holder, int position) {
         Reddit reddit = reddits.get(position);
-        Utils.attachReddit(holder, reddit, context);
+        Utils.attachReddit(holder, reddit);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class RedditAdapter extends RecyclerView.Adapter<RedditAdapter.RedditView
             tvCreated = (TextView) v.findViewById(R.id.tvCreated);
             tvAuthor = (TextView) v.findViewById(R.id.tvAuthor);
             tvComments = (TextView) v.findViewById(R.id.tvComments);
-            tvScore = (TextView) v.findViewById(R.id.tvRscore);
+            tvScore = (TextView) v.findViewById(R.id.tvScore);
         }
     }
 }
