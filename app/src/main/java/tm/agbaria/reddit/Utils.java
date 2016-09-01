@@ -4,12 +4,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
+
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -21,16 +24,6 @@ import tm.agbaria.reddit.reddit.Reddit;
  */
 public class Utils {
 
-    /*
-    attach the following data:
-    String author;
-    long created;
-    String title;
-    String thumbnail;
-    int score;
-    int numComments;
-     */
-
     public static void attachReddit(RedditAdapter.RedditViewAdapter holder, Reddit reddit) {
         holder.tvAuthor.setText(reddit.getAuthor());
         holder.tvCreated.setText(created(reddit.getCreated()));
@@ -41,24 +34,10 @@ public class Utils {
     }
 
     private static void setIcon(ImageView view, final String _url) {
-        ExecutorService es = Executors.newSingleThreadExecutor();
-        Future<Bitmap> result = es.submit(new Callable<Bitmap>() {
-            public Bitmap call() throws Exception {
-                try {
-                    URL url = new URL(_url);
-                    return BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-        });
-
         try {
-            Bitmap bmp = result.get();
-            if(bmp != null)
-                view.setImageBitmap(bmp);
-        } catch (Exception e) {
+            Picasso.with(view.getContext()).load(_url).resize(50, 50).into(view);
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }

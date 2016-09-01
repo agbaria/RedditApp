@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.Toast;
 
 import org.json.*;
 
@@ -14,27 +15,27 @@ import tm.agbaria.reddit.RedditAdapter;
 /**
  * Created by 3la2 on 24/08/2016.
  */
-public class RedditService extends AsyncTask<Void, Void, ArrayList<Reddit>> {
-    private String category;
+public class RedditService extends AsyncTask<String, Void, ArrayList<Reddit>> {
     private RecyclerView recyclerView;
     private Context context;
+    private String[] beforeAfter;
 
-    public RedditService(String category, RecyclerView recyclerView, Context context) {
-        this.category = category;
+    public RedditService(String[] beforeAfter, RecyclerView recyclerView, Context context) {
+        this.beforeAfter = beforeAfter;
         this.recyclerView = recyclerView;
         this.context = context;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
     @Override
-    protected ArrayList<Reddit> doInBackground(Void... voids) {
+    protected ArrayList<Reddit> doInBackground(String... url) {
         ArrayList<Reddit> reddits = new ArrayList<>();
         try {
-            String _json = HttpManager.downloadData("https://www.reddit.com/r/" + category + "/.json");
+            System.out.println("URL: " + url[0]);
+            String _json = HttpManager.downloadData(url[0]);
             JSONObject json = new JSONObject(_json);
+            beforeAfter[1] = json.getJSONObject("data").getString("after");
+            beforeAfter[0] = json.getJSONObject("data").getString("before");
+
             JSONArray children = json.getJSONObject("data").getJSONArray("children");
             for (int i = 0; i < children.length(); i++) {
                 JSONObject data = children.getJSONObject(i).getJSONObject("data");

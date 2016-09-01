@@ -18,11 +18,9 @@ import tm.agbaria.reddit.reddit.Reddit;
 public class RedditAdapter extends RecyclerView.Adapter<RedditAdapter.RedditViewAdapter>{
     private final LayoutInflater inflater;
     private ArrayList<Reddit> reddits;
-    private Context context;
 
     public RedditAdapter(ArrayList<Reddit> reddits, Context context) {
         this.reddits = reddits;
-        this.context = context;
         this.inflater = LayoutInflater.from(context);
     }
 
@@ -36,6 +34,12 @@ public class RedditAdapter extends RecyclerView.Adapter<RedditAdapter.RedditView
     public void onBindViewHolder(RedditViewAdapter holder, int position) {
         Reddit reddit = reddits.get(position);
         Utils.attachReddit(holder, reddit);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
     @Override
